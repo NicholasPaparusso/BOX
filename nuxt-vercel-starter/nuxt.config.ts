@@ -3,8 +3,13 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@nuxtjs/tailwindcss', '@sidebase/nuxt-auth'],
   css: ['~/assets/css/main.css'],
+
+  runtimeConfig: {
+    authOrigin: ''
+  },
+
   auth: {
-    baseURL: process.env.AUTH_ORIGIN ? `${process.env.AUTH_ORIGIN}/api/auth` : '/api/auth',
+    originEnvKey: 'AUTH_ORIGIN',
     provider: {
       type: 'authjs'
     },
