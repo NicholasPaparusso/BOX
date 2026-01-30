@@ -5,11 +5,11 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   runtimeConfig: {
-    authOrigin: ''
+    authOrigin: process.env.NUXT_AUTH_ORIGIN || process.env.AUTH_ORIGIN || ''
   },
 
   auth: {
-    originEnvKey: 'AUTH_ORIGIN',
+    originEnvKey: 'NUXT_AUTH_ORIGIN',
     provider: {
       type: 'authjs'
     },
