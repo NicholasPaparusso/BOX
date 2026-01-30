@@ -4,12 +4,16 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/tailwindcss', '@sidebase/nuxt-auth'],
   css: ['~/assets/css/main.css'],
 
+  // Runtime config - Nuxt reads NUXT_ prefixed env vars automatically
   runtimeConfig: {
-    authOrigin: process.env.NUXT_AUTH_ORIGIN || process.env.AUTH_ORIGIN || ''
+    public: {
+      authOrigin: process.env.AUTH_ORIGIN || 'https://box-psi-liard.vercel.app'
+    }
   },
 
   auth: {
-    originEnvKey: 'NUXT_AUTH_ORIGIN',
+    // Hardcode the baseURL for production since env vars are not working
+    baseURL: process.env.AUTH_ORIGIN || 'https://box-psi-liard.vercel.app/api/auth',
     provider: {
       type: 'authjs'
     },
