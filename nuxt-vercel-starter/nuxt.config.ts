@@ -4,8 +4,19 @@ export default defineNuxtConfig({
   modules: ['@nuxtjs/tailwindcss', '@sidebase/nuxt-auth'],
   css: ['~/assets/css/main.css'],
 
+  // Ensure auth API routes are handled correctly
+  routeRules: {
+    '/api/auth/**': {
+      cors: true,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+      }
+    }
+  },
+
   auth: {
-    // Use origin only (without /api/auth - nuxt-auth adds it automatically)
     baseURL: 'https://box-psi-liard.vercel.app',
     provider: {
       type: 'authjs'
