@@ -1,17 +1,91 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ADMIN
+  SOCIO
+  GUEST
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String?
+  password      String
+  role          Role      @default(GUEST)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  orders        Order[]
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  sku         String?  @unique
+  imageUrl    String?
+
+  costPrice   Decimal  @db.Decimal(10, 2)
+  priceGuest  Decimal  @db.Decimal(10, 2)
+  priceSocio  Decimal  @db.Decimal(10, 2)
+  
+  stock       Int      @default(0)
+  
+  category    String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id          String      @id @default(uuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  
+  total       Decimal     @db.Decimal(10, 2)
+  status      String      @default("PENDING")
+  
+  items       OrderItem[]
+  
+  createdAt   DateTime    @default(now())
+}
+
+model OrderItem {
+  id          String   @id @default(uuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id])
+  
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  
+  quantity    Int
+  priceAtBuy  Decimal  @db.Decimal(10, 2)
+}
+
+model News {
+  id          String   @id @default(uuid())
+  title       String
+  content     String   @db.Text
+  published   Boolean  @default(true)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model GuestKey {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime?
 }
